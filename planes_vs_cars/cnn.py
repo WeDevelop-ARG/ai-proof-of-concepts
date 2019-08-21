@@ -4,7 +4,6 @@ from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import backend as K
 from keras.preprocessing.image import ImageDataGenerator
 
-
 img_width, img_height = 224, 224
 
 train_data_dir = 'v_data/train'
@@ -29,9 +28,7 @@ model = Sequential()
   input _shape: standardises the size of the input image
   activation: Activation function to break the linearity
 """
-model.add(Conv2D(filters=32, kernel_size=(2, 2),
-                 input_shape=input_shape))
-
+model.add(Conv2D(filters=32, kernel_size=(2, 2), input_shape=input_shape))
 model.add(Activation('relu'))
 
 # - Pooling Layer
@@ -53,7 +50,6 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Flatten())
 
 # - Full-Connection Layer
-
 # - Adding the Hidden layer
 model.add(Dense(64))
 model.add(Activation('relu'))
@@ -75,9 +71,11 @@ model.add(Activation('sigmoid'))
   metrics: the metrics used to represent the efficiency of
   the model
 """
-model.compile(loss='binary_crossentropy',
-              optimizer='rmsprop',
-              metrics=['accuracy'])
+model.compile(
+    loss='binary_crossentropy',
+    optimizer='rmsprop',
+    metrics=['accuracy']
+)
 
 # - Generating Image Data
 """ Arguments:
@@ -89,10 +87,11 @@ model.compile(loss='binary_crossentropy',
   zoom_range: Range for random zooming of the image.
 """
 train_datagen = ImageDataGenerator(
-                  rescale=1./255,
-                  shear_range=0.2,
-                  zoom_range=0.2,
-                  horizontal_flip=True)
+    rescale=1./255,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True
+)
 
 test_datagen = ImageDataGenerator(rescale=1./255)
 
@@ -106,18 +105,19 @@ test_datagen = ImageDataGenerator(rescale=1./255)
   class_mode : Determines the type of label arrays that are returned.
   One of “categorical”, “binary”, “sparse”, “input”, or None.
 """
-
 train_generator = train_datagen.flow_from_directory(
-                    train_data_dir,
-                    target_size=(img_width, img_height),
-                    batch_size=batch_size,
-                    class_mode='binary')
+    train_data_dir,
+    target_size=(img_width, img_height),
+    batch_size=batch_size,
+    class_mode='binary'
+)
 
 validation_generator = test_datagen.flow_from_directory(
-                        validation_data_dir,
-                        target_size=(img_width, img_height),
-                        batch_size=batch_size,
-                        class_mode='binary')
+    validation_data_dir,
+    target_size=(img_width, img_height),
+    batch_size=batch_size,
+    class_mode='binary'
+)
 
 # - Training and Evaluating the model
 """ Arguments
@@ -134,14 +134,15 @@ validation_generator = test_datagen.flow_from_directory(
   the predictions of the neural network(Test_set).
   nb_val_samples: Total number of steps (batches of samples) to yield
   from validation_data generator before stopping at the
-  end of every epoch.
+     end of every epoch.
 """
-
-model.fit_generator(train_generator,
-                    steps_per_epoch=nb_train_samples//batch_size,
-                    epochs=epochs,
-                    validation_data=validation_generator,
-                    validation_steps=nb_validation_samples//batch_size)
+model.fit_generator(
+    train_generator,
+    steps_per_epoch=nb_train_samples//batch_size,
+    epochs=epochs,
+    validation_data=validation_generator,
+    validation_steps=nb_validation_samples//batch_size
+)
 
 """
 The above function trains the neural network using the training set and
@@ -150,6 +151,5 @@ for each epoch ‘acc’ and ‘val_acc’ which are the accuracy of predictions
 obtained in the training set and accuracy attained in
 the test set respectively.
 """
-
 # - Save our Keras models to file
 model.save_weights('model_saved.h5')
