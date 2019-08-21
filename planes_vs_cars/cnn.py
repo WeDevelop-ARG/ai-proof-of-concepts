@@ -74,8 +74,7 @@ model.add(Activation('sigmoid'))
 model.compile(
     loss='binary_crossentropy',
     optimizer='rmsprop',
-    metrics=['accuracy']
-)
+`)
 
 # - Generating Image Data
 """ Arguments:
@@ -134,7 +133,7 @@ validation_generator = test_datagen.flow_from_directory(
   the predictions of the neural network(Test_set).
   nb_val_samples: Total number of steps (batches of samples) to yield
   from validation_data generator before stopping at the
-     end of every epoch.
+  end of every epoch.
 """
 model.fit_generator(
     train_generator,
