@@ -4,14 +4,19 @@ from keras.metrics import categorical_crossentropy, categorical_accuracy
 from keras.preprocessing.image import ImageDataGenerator
 from buildModel import buildModel
 from getHyperparameters import getHyperparameters
+from getTrainingHyperparameters import getTrainingHyperparameters
+from constants import IMAGE_SIZE
 
-data_generator = ImageDataGenerator(rescale=1./255, validation_split=0.33)
+data_generator = ImageDataGenerator(
+  rescale=1./255,
+  validation_split=0.33
+)
 
 TRAINING_DIR = './v_data_2'
-IMAGE_SIZE = 224
 BATCH_SIZE = 64
-EPOCHS = 10
+EPOCHS = 100
 (LOSS, OPTIMIZER, METRICS) = getHyperparameters()
+(CALLBACKS) = getTrainingHyperparameters()
 
 train_generator = data_generator.flow_from_directory(
   TRAINING_DIR,
@@ -40,7 +45,9 @@ model.summary()
 history = model.fit_generator(
   train_generator,
   epochs=EPOCHS,
-  validation_data=validation_generator
+  validation_data=validation_generator,
+  shuffle=True,
+  callbacks=CALLBACKS
 )
 
 model.save('./model.h5')
