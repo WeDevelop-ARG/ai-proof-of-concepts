@@ -5,24 +5,25 @@ from keras.preprocessing.image import ImageDataGenerator
 from buildModel import buildModel
 from getHyperparameters import getHyperparameters
 from getTrainingHyperparameters import getTrainingHyperparameters
-from constants import IMAGE_SIZE
+from setSeed import setSeed
+from constants import IMAGE_SIZE, CHANNELS, TRAINING_DIR, SEED
+
+# Create data generators to load images from disk and do data augmentation
+
+setSeed()
 
 data_generator = ImageDataGenerator(
   rescale=1./255,
-  validation_split=0.33
+  validation_split=0.33,
+  rotation_range= 0.2,
+  width_shift_range=0.2
 )
-
-TRAINING_DIR = './v_data_2'
-BATCH_SIZE = 64
-EPOCHS = 100
-(LOSS, OPTIMIZER, METRICS) = getHyperparameters()
-(CALLBACKS) = getTrainingHyperparameters()
 
 train_generator = data_generator.flow_from_directory(
   TRAINING_DIR,
   target_size=(IMAGE_SIZE, IMAGE_SIZE),
   shuffle=True,
-  seed=13,  
+  seed=SEED,  
   class_mode='categorical',
   batch_size=BATCH_SIZE,
   subset="training"
@@ -32,15 +33,24 @@ validation_generator = data_generator.flow_from_directory(
   TRAINING_DIR,
   target_size=(IMAGE_SIZE, IMAGE_SIZE),
   shuffle=True,
-  seed=13,
+  seed=SEED,
   class_mode='categorical',
   batch_size=BATCH_SIZE,
   subset="validation"
 )
 
+# Build model
+
+(LOSS, OPTIMIZER, METRICS) = getHyperparameters()
+(EPOCHS, BATCH_SIZE, CALLBACKS) = getTrainingHyperparameters()
+
 model = buildModel()
+
 model.compile(loss=LOSS, optimizer=OPTIMIZER, metrics=METRICS)
+
 model.summary()
+
+# Train
 
 history = model.fit_generator(
   train_generator,
@@ -51,6 +61,8 @@ history = model.fit_generator(
 )
 
 model.save('./model.h5')
+
+# Plot step by step movements of the accuracy metric
 
 plt.plot(history.history['categorical_accuracy'])
 plt.plot(history.history['val_categorical_accuracy'])
