@@ -21,7 +21,7 @@ def printLabelPredictionForImages(imagesPath: list):
         else:
             print(str(img) + ' - ' + 'this is a plant - accuracy on prediction: ' + str(percentage))
 
-model = buildModelFromDisk()
+model = buildModelFromDisk('./checkpoint.h5')
 
 # Test prediction on images. Take into consideraton these are specific samples
 # to test the boundaries of the classifier. A test set would be more

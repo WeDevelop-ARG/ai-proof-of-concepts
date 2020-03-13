@@ -2,7 +2,7 @@
   Hyperparameters used to compile the model
 '''
 
-from keras.optimizers import RMSprop, Adadelta, Adam
+from keras.optimizers import RMSprop, Adadelta, Adam, SGD
 
 def getHyperparameters():
   OPTIMIZER = 'adam'

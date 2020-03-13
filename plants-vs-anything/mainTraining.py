@@ -10,13 +10,14 @@ from constants import IMAGE_SIZE, CHANNELS, TRAINING_DIR, SEED
 
 # Create data generators to load images from disk and do data augmentation
 
-setSeed()
+# setSeed()
+
+(LOSS, OPTIMIZER, METRICS) = getHyperparameters()
+(EPOCHS, BATCH_SIZE, CALLBACKS) = getTrainingHyperparameters()
 
 data_generator = ImageDataGenerator(
   rescale=1./255,
-  validation_split=0.33,
-  rotation_range= 0.2,
-  width_shift_range=0.2
+  validation_split=0.33
 )
 
 train_generator = data_generator.flow_from_directory(
@@ -40,9 +41,6 @@ validation_generator = data_generator.flow_from_directory(
 )
 
 # Build model
-
-(LOSS, OPTIMIZER, METRICS) = getHyperparameters()
-(EPOCHS, BATCH_SIZE, CALLBACKS) = getTrainingHyperparameters()
 
 model = buildModel()
 
